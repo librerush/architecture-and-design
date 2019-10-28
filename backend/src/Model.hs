@@ -14,21 +14,21 @@ import           Data.Vector                (Vector)
 import           Database.PostgreSQL.Simple
 
 data Student = Student
-  { idStudent      :: Int
-  , nameStudent    :: Text
-  , scoreStudent   :: Integer
-  , coursesStudent :: Vector Text
+  { idStudent      :: !Int
+  , nameStudent    :: !Text
+  , scoreStudent   :: !Integer
+  , coursesStudent :: !(Vector Text)
   } deriving (Show, Generic, FromRow)
 
 data Course = Course
-  { idCourse          :: Int
-  , nameCourse        :: Text
-  , descriptionCourse :: Text
-  , materialsCourse   :: Vector Text
+  { idCourse          :: !Int
+  , nameCourse        :: !Text
+  , descriptionCourse :: !Text
+  , materialsCourse   :: !(Vector Text)
   } deriving (Show, Generic, FromRow)
 
 data Staff = Staff
-  { idStaff      :: Int
-  , nameStaff    :: Text
-  , staffCourses :: Vector Text
+  { idStaff      :: !Int
+  , nameStaff    :: !Text
+  , coursesStaff :: !(Vector Text)
   } deriving (Show, Generic, FromRow)
