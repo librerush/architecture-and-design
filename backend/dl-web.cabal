@@ -25,6 +25,8 @@ library
   exposed-modules:
       Lib
       Cookie
+      DB
+      Model
       View
 --  other-modules:
 --      Paths_hrfsize
@@ -43,6 +45,7 @@ library
       , text
       , time
       , unliftio-core
+      , vector
       , wai
       , wai-extra
       , wai-middleware-static
