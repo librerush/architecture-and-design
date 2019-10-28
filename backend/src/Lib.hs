@@ -27,7 +27,10 @@ main = scotty 8080 $ do
   -- middleware $ staticPolicy (noDots >-> addBase "static")
 
   get "/" $
-    html $ startingPage
+    html startingPage
 
   get "/signup" $ do
     html signUpPage
+
+  get "/signin" $ do
+    html signInPage
