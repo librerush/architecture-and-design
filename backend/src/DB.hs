@@ -5,6 +5,7 @@ module DB
   , addStaff
   , getStudentByName
   , getStaffByName
+  , getStudentId
   , isStudentAccount
   , isStaffAccount
   ) where
@@ -82,5 +83,13 @@ getStaffByName !conn !name = do
   case res of
     [staff] -> pure $ Just staff
     _       -> pure $ Nothing
+
+getStudentId :: Connection -> Text -> IO (Maybe Int)
+getStudentId conn name = do
+  let !q = "SELECT id FROM student WHERE name = ?"
+  !res <- query conn q (Only name) :: IO [Only Int]
+  case res of
+    [id_] -> pure $ Just $ fromOnly id_
+    _     -> pure Nothing
 
 

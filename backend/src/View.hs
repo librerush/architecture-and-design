@@ -3,12 +3,16 @@ module View
   ( startingPage
   , signUpPage
   , signInPage
+  , homePage
   ) where
 
+import           Model
+
 import           Control.Monad                        (replicateM_)
+import           Data.Monoid                          ((<>))
 import           Prelude                              hiding (head)
 
-import           Data.Text.Lazy                       (Text)
+import           Data.Text.Lazy                       (Text, pack)
 import           Text.Blaze.Html.Renderer.Text
 import           Text.Blaze.Html4.FrameSet            (center)
 import           Text.Blaze.Html4.FrameSet.Attributes (action, bgcolor, charset,
@@ -52,6 +56,9 @@ signUpPage = renderHtml $ do
           p "Password"
           input ! type_ "password" ! name "password"
           br
+          p "Repeat password"
+          input ! type_ "password" ! name "repeatpasswd"
+          br
           input ! type_ "radio" ! name "who" ! value "staff"
           " staff"
           br
@@ -80,3 +87,17 @@ signInPage = renderHtml $ do
           input ! type_ "password" ! name "password"
           br >> br
           button ! type_ "submit" $ "Sign In"
+
+homePage :: Student -> Text
+homePage !student = renderHtml $ do
+  docTypeHtml $ do
+    html $ do
+      head $ do
+        title "Home Page"
+        meta ! charset "UTF-8"
+      body ! bgcolor "#BBCEDD" $ do
+        replicateM_ 10 br
+        center $ p $ toHtml $ "name: " <> nameStudent student
+        br
+        center $ p $ toHtml $ ("id: " :: Text) <>
+          (pack . show $ idStudent student)
