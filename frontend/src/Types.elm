@@ -1,5 +1,6 @@
 module Types exposing
-  ( Model (..) 
+  ( Model (..)
+  , Msg (..)
   , Student
   , Staff
   , Course
@@ -19,6 +20,10 @@ type Model
   | SignUpPage
   | UserPage
   | CoursePage
+
+type Msg
+  = GotSignUpPage
+  | GotStartPage
 
 type alias Student =
   { id      : Int

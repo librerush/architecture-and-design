@@ -1,7 +1,7 @@
 
-module StartingPage exposing (startingPage)
+module Page.Starting exposing (startingPage)
 
-import Types
+import Types as T
 
 import Element as El
 import Element.Font as Font
@@ -9,7 +9,7 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Input as Input
 
-dlText : El.Element msg
+dlText : El.Element T.Msg
 dlText =
   El.el
     [ Font.size 30
@@ -24,7 +24,7 @@ dlText =
     ]
     (El.text "Distance Learning")
 
-signInButton : El.Element msg
+signInButton : El.Element T.Msg
 signInButton =
   Input.button
     [ --Background.color (El.rgb255 250 250 250)
@@ -38,7 +38,7 @@ signInButton =
     , label = El.text "Sign In"
     }
 
-signUpButton : El.Element msg
+signUpButton : El.Element T.Msg
 signUpButton =
   Input.button
     [ --Background.color (El.rgb255 250 250 250)
@@ -48,11 +48,11 @@ signUpButton =
     , El.height (El.px 100)
     , El.width (El.px 100)
     ]
-    { onPress = Nothing
+    { onPress = Just (T.GotSignUpPage)
     , label = El.text "Sign Up"
     }
 
-startingPage : El.Element msg
+startingPage : El.Element T.Msg
 startingPage =
   El.row
     [ El.centerX
