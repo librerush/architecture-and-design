@@ -1,16 +1,24 @@
-module Types exposing ( Student
-                      , Staff
-                      , Course
-                      , studentEncode
-                      , studentDecode
-                      , staffEncode
-                      , staffDecode
-                      , courseEncode
-                      , courseDecode
-                      )
+module Types exposing
+  ( Model (..) 
+  , Student
+  , Staff
+  , Course
+  , studentEncode
+  , studentDecode
+  , staffEncode
+  , staffDecode
+  , courseEncode
+  , courseDecode
+  )
 
 import Json.Encode as E
 import Json.Decode as D
+
+type Model
+  = StartingPage
+  | SignUpPage
+  | UserPage
+  | CoursePage
 
 type alias Student =
   { id      : Int

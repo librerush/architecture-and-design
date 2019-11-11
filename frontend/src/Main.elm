@@ -1,13 +1,16 @@
 module Main exposing (..)
 
-import Types
+import Types as T
+import StartingPage
 
 import Browser
 import Element as El
-import Html
+import Element.Background as Background
+import Element.Font as ElFont
+import Html exposing (..)
 import Html.Events exposing (onClick)
 
-
+main : Program () T.Model msg
 main =
   Browser.element { init = init
                   , view = view
@@ -16,14 +19,34 @@ main =
                   }
 
 
-type Model = Model
+--type Model
+  --= StartingPage
+  --| SignUpPage
+  --| UserPage
+  --| CoursePage
 
-subscriptions : Model -> Sub msg
+init : () -> (T.Model, Cmd msg)
+init _ =
+  (T.StartingPage, Cmd.none)
+
+subscriptions : T.Model -> Sub msg
 subscriptions _ =
   Sub.none
 
-view : Model -> Html msg
+view : T.Model -> Html msg
 view model =
- 
+  let page =
+        case model of
+          T.StartingPage -> StartingPage.startingPage
+          _              -> StartingPage.startingPage
+  in
+  El.layout
+    [ Background.color (El.rgb255 149 117 205) 
+    ] page
+
+update : msg -> T.Model -> (T.Model, Cmd msg)
+update msg model =
+  (T.StartingPage, Cmd.none)
+
 
 
