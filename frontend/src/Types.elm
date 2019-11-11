@@ -1,6 +1,12 @@
 module Types exposing
-  ( Model (..)
+  ( Model 
   , Msg (..)
+  , Pages (..)
+  , Who (..)
+  , initModel
+  , initStudent
+  , initStaff
+  , initCourse
   , Student
   , Staff
   , Course
@@ -15,15 +21,62 @@ module Types exposing
 import Json.Encode as E
 import Json.Decode as D
 
-type Model
+
+type Pages
   = StartingPage
   | SignUpPage
   | UserPage
   | CoursePage
 
+type Who
+  = WhoStudent Student
+  | WhoStaff Staff
+  | WhoNobody
+
+type alias Model =
+  { who : Who
+  , password : String
+  , page : Pages
+  }    
+
+
+initModel : Model
+initModel =
+  { who = WhoNobody
+  , password = ""
+  , page = StartingPage
+  } 
+
+initStudent : Student
+initStudent =
+  { id = 0
+  , name = ""
+  , score = 0
+  , courses = []
+  }
+
+initStaff : Staff
+initStaff =
+  { id = 0
+  , name = ""
+  , courses = []
+  }
+
+initCourse : Course
+initCourse =
+  { id = 0
+  , name = ""
+  , description = ""
+  , materials = []
+  }
+
+
 type Msg
   = GotSignUpPage
   | GotStartPage
+  | GotNoAction
+  | GotPassword String
+  | GotUserName String
 
 type alias Student =
   { id      : Int
