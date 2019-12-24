@@ -15,6 +15,7 @@ import           Data.Maybe                           (fromJust, isNothing)
 
 import           Data.ByteString                      (ByteString)
 import           Data.Text                            (Text)
+import qualified Data.Text.Lazy                       as LT
 import qualified Database.PostgreSQL.Simple           as Db (close)
 import           Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import           Web.Scotty
@@ -47,6 +48,26 @@ main = do
       liftIO $ writeIORef studentRef defStudent
       liftIO $ writeIORef staffRef defStaff
       redirect "/"
+
+    post "/create/course" $ do
+      html createCoursePage
+
+    post "/create/new_course" $ do
+      name <- param "course_name"
+      desc <- param "course_desc"
+      void . liftIO $ addCourse (fromJust conn) name desc
+      redirect $ ("/add/lecture/" :: LT.Text) <> LT.fromStrict name
+
+    get "/add/lecture/:course" $ do
+      name <- param "course"
+      html $ addLecturePage name
+
+    post "/add/lecture/content/:name" $ do
+      name <- param "name"
+      content <- param "lec_text"
+      let !cadd = encodeCourseAdd $ CourseAdd (LT.toStrict content) []
+      void . liftIO $ addLecture (fromJust conn) name cadd
+      text content
 
     get "/home-student" $ do
       student <- liftIO $ readIORef studentRef

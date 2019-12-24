@@ -1,6 +1,8 @@
 
 module View
-  ( startingPage
+  ( addLecturePage
+  , createCoursePage
+  , startingPage
   , signUpPage
   , signInPage
   , homeStudentPage
@@ -14,13 +16,69 @@ import           Control.Monad                        (replicateM_)
 import           Data.Monoid                          ((<>))
 import           Prelude                              hiding (div, head)
 
-import           Data.Text.Lazy                       (Text, pack)
+import           Data.Text.Lazy                       (Text, pack, toStrict)
+import           Text.Blaze                           (textValue)
 import           Text.Blaze.Html.Renderer.Text
 import           Text.Blaze.Html4.FrameSet            (center)
 import           Text.Blaze.Html4.FrameSet.Attributes (action, bgcolor, charset,
-                                                       href, method, name, src,
-                                                       style, type_, value)
+                                                       cols, href, method, name,
+                                                       rows, src, style, type_,
+                                                       value)
 import           Text.Blaze.Html5                     hiding (style)
+
+
+createCoursePage :: Text
+createCoursePage = renderHtml $ do
+  docTypeHtml $ do
+    html $ do
+      head $ do
+        title "Creating a new course"
+        meta ! charset "UTF-8"
+      body ! bgcolor "#BBCEDD" $ do
+        header ! style "border-bottom: 0.2rem; color: #555;" $ do
+          nav ! style "text-align: center; margin: 0 auto 3rem;" $ do
+            let aStyle = "text-transform: uppercase; \
+              \display: inline; margin: 0 0.6rem;"
+            a ! style aStyle ! href "/" $ "main"
+            a ! style aStyle ! href "/home-staff" $ "home"
+            a ! style aStyle ! href "/log-out" $ "log out"
+
+        replicateM_ 1 br
+        center $ do
+          form ! method "post" ! action "/create/new_course" $ do
+            p ! style "font-style: italic" $ "name of course"
+            input ! type_ "text" ! name "course_name"
+            p ! style "font-style: italic" $ "description of course"
+            input ! type_ "text" ! name "course_desc"
+            replicateM_ 2 br
+            button ! type_ "submit" $ "create"
+
+
+addLecturePage :: Text -> Text
+addLecturePage cname = renderHtml $ do
+  docTypeHtml $ do
+    html $ do
+      head $ do
+        title $ "Add lecture | " <> (toHtml cname)
+        meta ! charset "UTF-8"
+      body ! bgcolor "#BBCEDD" $ do
+        header ! style "border-bottom: 0.2rem; color: #555;" $ do
+          nav ! style "text-align: center; margin: 0 auto 3rem;" $ do
+            let aStyle = "text-transform: uppercase; \
+              \display: inline; margin: 0 0.6rem;"
+            a ! style aStyle ! href "/" $ "main"
+            a ! style aStyle ! href "/home-staff" $ "home"
+            a ! style aStyle ! href "/log-out" $ "log out"
+
+        replicateM_ 1 br
+        center $ do
+          p ! style "font-style: bold;" $ "add a lecture for " <> toHtml cname
+          form ! method "post" !
+            action ("/add/lecture/content/" <> (textValue $ toStrict cname)) $ do
+              textarea ! name "lec_text" ! rows "20" ! cols "35" $ ""
+              replicateM_ 2 br
+              button ! type_ "submit" $ "add"
+
 
 startingPage :: Text
 startingPage = renderHtml $ do
@@ -126,3 +184,6 @@ homeStaffPage !staff = renderHtml $ do
         center $ do
           p ! style "font-style: italic;" $ toHtml $ nameStaff staff
           img ! style "width: 100px; height: 100px;" ! src "/avatar.png"
+          replicateM_ 2 br
+          form ! method "post" ! action "/create/course" $ do
+            button ! type_ "submit" $ "create a course"

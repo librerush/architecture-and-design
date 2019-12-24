@@ -38,6 +38,7 @@ library
       , bytestring
       , blaze-html
       , blaze-builder
+      , blaze-markup
       , cookie
       , scotty
       , mtl
