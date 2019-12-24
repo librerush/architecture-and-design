@@ -115,7 +115,7 @@ homeStaffPage !staff = renderHtml $ do
         meta ! charset "UTF-8"
       body ! bgcolor "#BBCEDD" $ do
         replicateM_ 10 br
-        center $ p $ toHtml $ "name: " <> nameStaff staff
+        center $ p $ toHtml $ "staff name: " <> nameStaff staff
         br
         center $ p $ toHtml $ ("id: " :: Text) <>
           (pack . show $ idStaff staff)

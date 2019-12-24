@@ -48,6 +48,31 @@ main = do
       staff <- liftIO $ readIORef staffRef
       html $ homeStaffPage staff
 
+    post "/signin-post" $ do
+      name <- param "username"
+      password <- param "password"
+      isStudent <- liftIO $
+        isStudentAccount (fromJust conn) (name, password)
+      isStaff <- liftIO $
+        isStaffAccount (fromJust conn) (name, password)
+      if isStudent then do
+        student_ <- liftIO $ getStudentByName (fromJust conn) name
+        case student_ of
+          Just student -> do
+            liftIO $ writeIORef studentRef student
+            redirect "/home-student"
+          Nothing -> text $ "no student has such name"
+      else if isStaff then do
+        staff_ <- liftIO $ getStaffByName (fromJust conn) name
+        case staff_ of
+          Just staff -> do
+            liftIO $ writeIORef staffRef staff
+            redirect "/home-staff"
+          Nothing -> text $ "no staff has such name"
+      else
+        text "there is no such user"
+
+
     post "/signup-post" $ do
       name <- param "username"
       password <- param "password"
