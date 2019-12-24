@@ -12,6 +12,7 @@ module Model
 
 import           GHC.Generics               (Generic)
 
+import           Data.Aeson                 (FromJSON, ToJSON)
 import           Data.Text                  (Text)
 import           Data.Vector                (Vector)
 import qualified Data.Vector                as V
@@ -21,14 +22,14 @@ data Student = Student
   { idStudent      :: !Int
   , nameStudent    :: !Text
   , scoreStudent   :: !Int
-  , coursesStudent :: !(Vector Text)
+  , coursesStudent :: !(Vector Int)
   } deriving (Show, Generic, FromRow)
 
 data Course = Course
   { idCourse          :: !Int
   , nameCourse        :: !Text
   , descriptionCourse :: !Text
-  , materialsCourse   :: !(Vector Text)
+  , materialsCourse   :: !(Vector Int)
   } deriving (Show, Generic, FromRow)
 
 data Staff = Staff

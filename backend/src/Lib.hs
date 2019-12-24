@@ -25,6 +25,7 @@ main = do
   conn <- initDbConnection
   when (isNothing conn) $ error "initDbConnection failed"
   studentRef <- newIORef defStudent
+  staffRef <- newIORef defStaff
 
   scotty 8080 $ do
     middleware logStdoutDev
@@ -39,9 +40,13 @@ main = do
     get "/signin" $ do
       html signInPage
 
-    get "/home" $ do
+    get "/home-student" $ do
       student <- liftIO $ readIORef studentRef
-      html $ homePage student
+      html $ homeStudentPage student
+
+    get "/home-staff" $ do
+      staff <- liftIO $ readIORef staffRef
+      html $ homeStaffPage staff
 
     post "/signup-post" $ do
       name <- param "username"
@@ -53,16 +58,21 @@ main = do
       else case who of
             ("student" :: Text) -> do
               void . liftIO $ addStudent (fromJust conn) name password
-              idMaybe <- liftIO $ getStudentId (fromJust conn) name
-              case idMaybe of
-                Just id_ -> do
-                  liftIO $ writeIORef studentRef
-                    (defStudent {idStudent = id_, nameStudent = name})
-                  redirect "/home"
-                Nothing  -> redirect "/"
+              maybeStudent_ <- liftIO $ getStudentByName (fromJust conn) name
+              case maybeStudent_ of
+                Just maybeStudent -> do
+                  liftIO $ writeIORef studentRef maybeStudent
+                  redirect "/home-student"
+                Nothing -> redirect "/"
             ("staff" :: Text)   -> do
               void . liftIO $ addStaff (fromJust conn) name password
-              redirect "/"
+              staffMaybe_ <- liftIO $ getStaffByName (fromJust conn) name
+              case staffMaybe_ of
+                Just staffMaybe -> do
+                  liftIO $ writeIORef staffRef staffMaybe
+                  liftIO $ print staffMaybe
+                  redirect "/home-staff"
+                Nothing -> redirect "/"
             _                   -> text "Select student or staff"
 
   void . pure $ Db.close <$> conn

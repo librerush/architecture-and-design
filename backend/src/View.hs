@@ -3,22 +3,24 @@ module View
   ( startingPage
   , signUpPage
   , signInPage
-  , homePage
+  , homeStudentPage
+  , homeStaffPage
   ) where
+
 
 import           Model
 
 import           Control.Monad                        (replicateM_)
 import           Data.Monoid                          ((<>))
-import           Prelude                              hiding (head)
+import           Prelude                              hiding (div, head)
 
 import           Data.Text.Lazy                       (Text, pack)
 import           Text.Blaze.Html.Renderer.Text
 import           Text.Blaze.Html4.FrameSet            (center)
 import           Text.Blaze.Html4.FrameSet.Attributes (action, bgcolor, charset,
-                                                       method, name, type_,
-                                                       value)
-import           Text.Blaze.Html5
+                                                       method, name, style,
+                                                       type_, value)
+import           Text.Blaze.Html5                     hiding (style)
 
 startingPage :: Text
 startingPage = renderHtml $ do
@@ -29,7 +31,8 @@ startingPage = renderHtml $ do
         meta ! charset "UTF-8"
       body ! bgcolor "#BBCEDD" $ do
         replicateM_ 10 br
-        center $ h2 "Distance Learning"
+        center ! style "color:#303F9F; font-family: Arial;" $
+          h2 "Distance Learning"
         br
         center $ form ! method "get" ! action "/signup" $ do
           input ! type_ "submit" ! value "Sign Up"
@@ -47,23 +50,23 @@ signUpPage = renderHtml $ do
         meta ! charset "UTF-8"
       body ! bgcolor "#BBCEDD" $ do
         replicateM_ 10 br
-        center $ h3 "Sign Up"
+        center ! style "color:#303F9F; font-family: Arial;" $ h3 "Sign Up"
         br
         center $ form ! method "post" ! action "/signup-post" $ do
-          p "Username"
+          p ! style "font-style: italic" $ "Username"
           input ! type_ "text" ! name "username"
           br
-          p "Password"
+          p ! style "font-style: italic" $ "Password"
           input ! type_ "password" ! name "password"
           br
-          p "Repeat password"
+          p ! style "font-style: italic" $ "Repeat password"
           input ! type_ "password" ! name "repeatpasswd"
           br
           input ! type_ "radio" ! name "who" ! value "staff"
           " staff"
           br
           input ! type_ "radio" ! name "who" ! value "student"
-          " student"
+          "   student"
           br >> br
           button ! type_ "submit" $ "Sign Up"
 
@@ -77,19 +80,20 @@ signInPage = renderHtml $ do
         meta ! charset "UTF-8"
       body ! bgcolor "#BBCEDD" $ do
         replicateM_ 10 br
-        center $ h3 "Sign In"
+        center ! style "color:#303F9F; font-family: Arial;" $ h3 "Sign In"
         br
-        center $ form ! method "post" ! action "/signin-post" $ do
-          p "Username"
-          input ! type_ "text" ! name "username"
-          br
-          p "Password"
-          input ! type_ "password" ! name "password"
-          br >> br
-          button ! type_ "submit" $ "Sign In"
+        div ! style "text-align: center;" $
+          form ! method "post" ! action "/signin-post" $ do
+            p ! style "font-style: italic" $ "Username"
+            input ! type_ "text" ! name "username"
+            br
+            p ! style "font-style: italic" $ "Password"
+            input ! type_ "password" ! name "password"
+            br >> br
+            button ! type_ "submit" $ "Sign In"
 
-homePage :: Student -> Text
-homePage !student = renderHtml $ do
+homeStudentPage :: Student -> Text
+homeStudentPage !student = renderHtml $ do
   docTypeHtml $ do
     html $ do
       head $ do
@@ -101,3 +105,17 @@ homePage !student = renderHtml $ do
         br
         center $ p $ toHtml $ ("id: " :: Text) <>
           (pack . show $ idStudent student)
+
+homeStaffPage :: Staff -> Text
+homeStaffPage !staff = renderHtml $ do
+  docTypeHtml $ do
+    html $ do
+      head $ do
+        title "Home Page"
+        meta ! charset "UTF-8"
+      body ! bgcolor "#BBCEDD" $ do
+        replicateM_ 10 br
+        center $ p $ toHtml $ "name: " <> nameStaff staff
+        br
+        center $ p $ toHtml $ ("id: " :: Text) <>
+          (pack . show $ idStaff staff)

@@ -61,7 +61,6 @@ startingPage =
     , El.padding 80
     , El.spacing 20
     ]
-    [ dlText
-    ]
+    [ dlText ]
 
 

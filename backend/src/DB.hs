@@ -41,8 +41,8 @@ initDbConnection = do
 
 addStudent :: Connection -> Text -> Text -> IO Int64
 addStudent !conn !sname !spasswd = do
-  execute conn "INSERT INTO student (name, password, score) VALUES \
-    \(?, ?, ?)" (sname, spasswd, 0 :: Int)
+  execute conn "INSERT INTO student (name, password, score, courses) VALUES \
+    \(?, ?, ?, ARRAY[]::integer[])" (sname, spasswd, 0 :: Int)
 
 -- | Get student by name (first occurence)
 getStudentByName :: Connection -> Text -> IO (Maybe Student)
@@ -72,8 +72,8 @@ isStaffAccount conn acc = do
 
 addStaff :: Connection -> Text -> Text -> IO Int64
 addStaff !conn !sname !spasswd = do
-  execute conn "INSERT INTO staff (name, password) VALUES \
-    \(?, ?)" (sname, spasswd)
+  execute conn "INSERT INTO staff (name, password, courses) VALUES \
+    \(?, ?, ARRAY[]::integer[])" (sname, spasswd)
 
 -- | Get staff by name (first occurence)
 getStaffByName :: Connection -> Text -> IO (Maybe Staff)
