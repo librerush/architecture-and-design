@@ -34,11 +34,19 @@ main = do
     get "/" $
       html startingPage
 
+    get "/avatar.png" $
+      file "static/avatar.png"
+
     get "/signup" $ do
       html signUpPage
 
     get "/signin" $ do
       html signInPage
+
+    get "/log-out" $ do
+      liftIO $ writeIORef studentRef defStudent
+      liftIO $ writeIORef staffRef defStaff
+      redirect "/"
 
     get "/home-student" $ do
       student <- liftIO $ readIORef studentRef

@@ -18,8 +18,8 @@ import           Data.Text.Lazy                       (Text, pack)
 import           Text.Blaze.Html.Renderer.Text
 import           Text.Blaze.Html4.FrameSet            (center)
 import           Text.Blaze.Html4.FrameSet.Attributes (action, bgcolor, charset,
-                                                       method, name, style,
-                                                       type_, value)
+                                                       href, method, name, src,
+                                                       style, type_, value)
 import           Text.Blaze.Html5                     hiding (style)
 
 startingPage :: Text
@@ -114,8 +114,15 @@ homeStaffPage !staff = renderHtml $ do
         title "Home Page"
         meta ! charset "UTF-8"
       body ! bgcolor "#BBCEDD" $ do
-        replicateM_ 10 br
-        center $ p $ toHtml $ "staff name: " <> nameStaff staff
-        br
-        center $ p $ toHtml $ ("id: " :: Text) <>
-          (pack . show $ idStaff staff)
+        header ! style "border-bottom: 0.2rem; color: #555;" $ do
+          nav ! style "text-align: center; margin: 0 auto 3rem;" $ do
+            let aStyle = "text-transform: uppercase; \
+              \display: inline; margin: 0 0.6rem;"
+            a ! style aStyle ! href "/" $ "main"
+            a ! style aStyle ! href "/home-staff" $ "home"
+            a ! style aStyle ! href "/log-out" $ "log out"
+
+        replicateM_ 1 br
+        center $ do
+          p ! style "font-style: italic;" $ toHtml $ nameStaff staff
+          img ! style "width: 100px; height: 100px;" ! src "/avatar.png"
