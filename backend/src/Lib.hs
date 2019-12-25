@@ -67,11 +67,19 @@ main = do
       content <- param "lec_text"
       let !cadd = encodeCourseAdd $ CourseAdd (LT.toStrict content) []
       void . liftIO $ addLecture (fromJust conn) name cadd
-      text content
+      redirect "/home-staff"
+
+    get "/course/:name" $ do
+      name <- param "name"
+      course_ <- liftIO $ getCourseByName (fromJust conn) name
+      case course_ of
+        Just course -> html $ coursePage course
+        Nothing     -> text "there is no such course"
 
     get "/home-student" $ do
       student <- liftIO $ readIORef studentRef
-      html $ homeStudentPage student
+      courses <- liftIO $ getAllCoursesName (fromJust conn)
+      html $ homeStudentPage student (LT.fromStrict <$> courses)
 
     get "/home-staff" $ do
       staff <- liftIO $ readIORef staffRef

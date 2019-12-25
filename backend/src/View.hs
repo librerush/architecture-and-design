@@ -7,12 +7,13 @@ module View
   , signInPage
   , homeStudentPage
   , homeStaffPage
+  , coursePage
   ) where
 
 
 import           Model
 
-import           Control.Monad                        (replicateM_)
+import           Control.Monad                        (replicateM_, forM_)
 import           Data.Monoid                          ((<>))
 import           Prelude                              hiding (div, head)
 
@@ -150,19 +151,33 @@ signInPage = renderHtml $ do
             br >> br
             button ! type_ "submit" $ "Sign In"
 
-homeStudentPage :: Student -> Text
-homeStudentPage !student = renderHtml $ do
+
+homeStudentPage :: Student -> [Text] -> Text
+homeStudentPage !student !courses = renderHtml $ do
   docTypeHtml $ do
     html $ do
       head $ do
         title "Home Page"
         meta ! charset "UTF-8"
       body ! bgcolor "#BBCEDD" $ do
-        replicateM_ 10 br
-        center $ p $ toHtml $ "name: " <> nameStudent student
-        br
-        center $ p $ toHtml $ ("id: " :: Text) <>
-          (pack . show $ idStudent student)
+        header ! style "border-bottom: 0.2rem; color: #555;" $ do
+          nav ! style "text-align: center; margin: 0 auto 3rem;" $ do
+            let aStyle = "text-transform: uppercase; \
+              \display: inline; margin: 0 0.6rem;"
+            a ! style aStyle ! href "/" $ "main"
+            a ! style aStyle ! href "/home-student" $ "home"
+            a ! style aStyle ! href "/log-out" $ "log out"
+
+        replicateM_ 1 br
+        center $ do
+          p ! style "font-style: italic;" $ toHtml $ nameStudent student
+          img ! style "width: 100px; height: 100px;" ! src "/avatar.png"
+          replicateM_ 2 br
+          forM_ courses $
+            \course -> a ! style "font-style: bold;" !
+              href ("/course/" <> (textValue $ toStrict course)) $
+              "[" <> (toHtml course) <> "]"
+
 
 homeStaffPage :: Staff -> Text
 homeStaffPage !staff = renderHtml $ do
@@ -187,3 +202,30 @@ homeStaffPage !staff = renderHtml $ do
           replicateM_ 2 br
           form ! method "post" ! action "/create/course" $ do
             button ! type_ "submit" $ "create a course"
+
+
+coursePage :: Course -> Text
+coursePage !course = renderHtml $ do
+  docTypeHtml $ do
+    html $ do
+      head $ do
+        title $ toHtml $ nameCourse course
+        meta ! charset "UTF-8"
+      body ! bgcolor "#BBCEDD" $ do
+        header ! style "border-bottom: 0.2rem; color: #555;" $ do
+          nav ! style "text-align: center; margin: 0 auto 3rem;" $ do
+            let aStyle = "text-transform: uppercase; \
+              \display: inline; margin: 0 0.6rem;"
+            a ! style aStyle ! href "/" $ "main"
+            a ! style aStyle ! href "/home-student" $ "home"
+            a ! style aStyle ! href "/log-out" $ "log out"
+
+        replicateM_ 1 br
+        center $ do
+          let !content_ = decodeCourseAdd $ materialsCourse course
+          case content_ of
+            Just content ->
+              p ! style "font-style: italic;" $ toHtml $ caddLec content
+            Nothing -> p "..."
+
+

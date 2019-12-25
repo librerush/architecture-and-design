@@ -11,6 +11,8 @@ module DB
   , isStaffAccount
   , getCourseAdd
   , addLecture
+  , getCourseByName
+  , getAllCoursesName
   ) where
 
 import           Model
@@ -124,6 +126,24 @@ addLecture :: Connection -> Text -> Text -> IO Int64
 addLecture !conn !name !content = do
   let !q = "UPDATE course SET materials = ? WHERE name = ?"
   execute conn q (content, name)
+
+
+-- | Get course by name (first occurence)
+getCourseByName :: Connection -> Text -> IO (Maybe Course)
+getCourseByName !conn !name = do
+  let !q = "SELECT * FROM course WHERE name = ?"
+  !res <- query conn q (Only name) :: IO [Course]
+  case res of
+    [course] -> pure $ Just course
+    _        -> pure $ Nothing
+
+
+getAllCoursesName :: Connection -> IO [Text]
+getAllCoursesName !conn = do
+  let !q = "SELECT name FROM course"
+  !res <- query_ conn q :: IO [Only Text]
+  pure $ fromOnly  <$> res
+
 
 
 
