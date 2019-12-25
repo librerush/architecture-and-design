@@ -10,7 +10,7 @@ CREATE TABLE course (
   id SERIAL PRIMARY KEY,
   name text NOT NULL,
   description text,
-  materials text[]
+  materials text
 );
 
 CREATE TABLE staff (
